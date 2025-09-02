@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:1972';
+const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 export const api = {
   getClubs: () => fetch(`${API_BASE}/api/clubs`).then(r => r.json()),
