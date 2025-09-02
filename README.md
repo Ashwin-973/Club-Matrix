@@ -52,7 +52,7 @@ cd backend
 npm install
 npm start
 ```
-Server runs on http://localhost:3001
+Server runs on http://localhost:1972
 
 ### Frontend Setup
 ```bash
