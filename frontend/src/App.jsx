@@ -29,7 +29,7 @@ function App() {
     <div className="min-h-screen bg-gray-100">
       <nav className="bg-white shadow">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex space-x-8 h-16">
+          <div className="flex space-x-10 h-16">
             <button
               onClick={() => handleNavClick('clubs')}
               className={`px-3 py-2 ${currentView === 'clubs' ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-700 hover:text-blue-600'}`}
