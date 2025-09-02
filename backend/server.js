@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
+const { clubs } = require('./data');
 
 const app = express();
 const PORT = 1972;
@@ -7,94 +9,113 @@ const PORT = 1972;
 app.use(cors());
 app.use(express.json());
 
-//mock data
-const clubsData = [
-  {
-    id: 1,
-    name: "Debate Society",
-    group: "Academic",
-    tags: ["debate", "public speaking", "argumentation", "competition"],
-    description: "A competitive debate club that participates in inter-collegiate tournaments and helps students develop critical thinking and public speaking skills."
-  },
-  {
-    id: 2,
-    name: "Model United Nations",
-    group: "Academic",
-    tags: ["diplomacy", "international relations", "negotiation", "politics"],
-    description: "Simulates UN proceedings where students represent different countries and engage in diplomatic discussions on global issues."
-  },
-  {
-    id: 3,
-    name: "Coding Club",
-    group: "Academic",
-    tags: ["coding", "software development", "hackathons", "technology"],
-    description: "Dedicated to fostering programming skills through workshops, coding competitions, and collaborative software projects."
-  },
-  {
-    id: 4,
-    name: "Economics Research Society",
-    group: "Academic",
-    tags: ["research", "economics", "analysis", "finance"],
-    description: "Conducts economic research projects and organizes seminars on current economic trends and policy analysis."
-  },
+const transporter = nodemailer.createTransporter({
+  host: 'smtp.mailtrap.io',
+  port: 2525,
+  auth: {
+    user: 'your-mailtrap-user',
+    pass: 'your-mailtrap-pass'
+  }
+});
 
-  {
-    id: 5,
-    name: "Film Club",
-    group: "Arts & Culture",
-    tags: ["theater", "acting", "performance", "storytelling"],
-    description: "Produces theatrical performances and provides a platform for students to explore acting, directing, and stage production."
-  },
+const calculateScore = (metrics) => {
+  const weights = {
+    engagement: 0.3,
+    community: 0.25,
+    impact: 0.25,
+    motivation: 0.2
+  };
   
-];
-
-
-app.get('/api',(req,res)=>{
-  res.send("Say My Name")
-})
+  return (
+    metrics.engagement * weights.engagement +
+    metrics.community * weights.community +
+    metrics.impact * weights.impact +
+    metrics.motivation * weights.motivation
+  );
+};
 
 app.get('/api/clubs', (req, res) => {
-  try {
-    res.json(clubsData);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch clubs data' });
-  }
+  res.json(clubs);
+});
+
+app.post('/api/clubs', (req, res) => {
+  const { name, description, tags, group } = req.body;
+  
+  const newClub = {
+    id: clubs.length + 1,
+    name,
+    description,
+    group,
+    tags: tags.split(',').map(tag => tag.trim()),
+    heads: [],
+    metrics: {
+      engagement: Math.floor(Math.random() * 40) + 60, // 60-100
+      community: Math.floor(Math.random() * 40) + 60,
+      impact: Math.floor(Math.random() * 40) + 60,
+      motivation: Math.floor(Math.random() * 40) + 60
+    }
+  };
+  
+  clubs.push(newClub);
+  res.status(201).json(newClub);
 });
 
 app.get('/api/groups', (req, res) => {
-  try {
-    const groupedClubs = clubsData.reduce((groups, club) => {
-      const group = club.group;
-      if (!groups[group]) {
-        groups[group] = [];
-      }
-      groups[group].push(club);
-      return groups;
-    }, {});
-
-    res.json(groupedClubs);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to group clubs data' });
-  }
-});
-
-app.get('/api/club/:id', (req, res) => {
-  try {
-    const clubId = parseInt(req.params.id);
-    const club = clubsData.find(club => club.id === clubId);
-    
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
+  const grouped = clubs.reduce((acc, club) => {
+    if (!acc[club.group]) {
+      acc[club.group] = [];
     }
-    
-    res.json(club);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch club data' });
-  }
+    acc[club.group].push(club);
+    return acc;
+  }, {});
+  
+  res.json(grouped);
 });
 
+app.get('/api/ranking', (req, res) => {
+  const rankedClubs = clubs
+    .map(club => ({
+      ...club,
+      score: calculateScore(club.metrics)
+    }))
+    .sort((a, b) => b.score - a.score);
+    
+  res.json(rankedClubs);
+});
+
+app.post('/api/send-survey', async (req, res) => {
+  const { email, clubName, surveyData } = req.body;
+  
+  const mailOptions = {
+    from: 'clubmatrix@example.com',
+    to: email,
+    subject: `Club Survey for ${clubName}`,
+    text: `
+Dear Club Head,
+
+We would like to gather feedback about ${clubName}. Please take a moment to respond to our survey:
+
+Survey Questions:
+${surveyData.questions || 'General feedback questions about club performance and engagement.'}
+
+Survey Link: ${surveyData.link || 'https://example.com/survey'}
+
+Thank you for your time!
+
+Best regards,
+ClubMatrix Team
+    `
+  };
+  
+  try {
+    await transporter.sendMail(mailOptions);
+    res.json({ success: true, message: 'Survey sent successfully' });
+  } catch (error) {
+    console.error('Email sending failed:', error);
+    res.status(500).json({ success: false, message: 'Failed to send survey' });
+  }
+});
 
 app.listen(PORT, () => {
-  console.log(`Club-Matrix api running on http://localhost:${PORT}`);
-
+  console.log(`Server running on http://localhost:${PORT}`);
 });
