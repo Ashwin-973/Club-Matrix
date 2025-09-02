@@ -127,6 +127,10 @@ const clubsData = [
 ];
 
 
+app.get('/api',(req,res)=>{
+  res.send("Say My Name")
+})
+
 app.get('/api/clubs', (req, res) => {
   try {
     res.json(clubsData);
