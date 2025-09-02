@@ -127,6 +127,46 @@ const clubsData = [
 ];
 
 
+app.get('/api/clubs', (req, res) => {
+  try {
+    res.json(clubsData);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch clubs data' });
+  }
+});
+
+app.get('/api/groups', (req, res) => {
+  try {
+    const groupedClubs = clubsData.reduce((groups, club) => {
+      const group = club.group;
+      if (!groups[group]) {
+        groups[group] = [];
+      }
+      groups[group].push(club);
+      return groups;
+    }, {});
+
+    res.json(groupedClubs);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to group clubs data' });
+  }
+});
+
+app.get('/api/club/:id', (req, res) => {
+  try {
+    const clubId = parseInt(req.params.id);
+    const club = clubsData.find(club => club.id === clubId);
+    
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+    
+    res.json(club);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch club data' });
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(`Club-Matrix api running on http://localhost:${PORT}`);
