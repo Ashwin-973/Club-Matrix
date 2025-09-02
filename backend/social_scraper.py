@@ -30,7 +30,6 @@ from typing import List, Dict, Optional, Any
 # =============================================================================
 
 # Replace with your Apify API token (get it from https://console.apify.com/account/integrations)
-APIFY_TOKEN = "mock"
 
 # List of Instagram usernames to scrape (without @ symbol)
 USERNAMES = [
