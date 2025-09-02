@@ -1,0 +1,23 @@
+{
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#79c039",
+        "activityBar.background": "#79c039",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#336cac",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#e7e7e799",
+        "sash.hoverBorder": "#79c039",
+        "statusBar.background": "#60992d",
+        "statusBar.foreground": "#e7e7e7",
+        "statusBarItem.hoverBackground": "#79c039",
+        "statusBarItem.remoteBackground": "#60992d",
+        "statusBarItem.remoteForeground": "#e7e7e7",
+        "titleBar.activeBackground": "#60992d",
+        "titleBar.activeForeground": "#e7e7e7",
+        "titleBar.inactiveBackground": "#60992d99",
+        "titleBar.inactiveForeground": "#e7e7e799"
+    },
+    "peacock.color": "#60992D",
+    "CodeGPT.apiKey": "Anthropic"
+}
