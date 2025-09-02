@@ -4,7 +4,7 @@ const nodemailer = require('nodemailer');
 const { clubs } = require('./data');
 
 const app = express();
-const PORT = 1972;
+const PORT = 1972 || process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
