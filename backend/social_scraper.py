@@ -29,7 +29,6 @@ from typing import List, Dict, Optional, Any
 # CONFIGURATION
 # =============================================================================
 
-# Replace with your Apify API token (get it from https://console.apify.com/account/integrations)
 
 # List of Instagram usernames to scrape (without @ symbol)
 USERNAMES = [
