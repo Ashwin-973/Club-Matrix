@@ -9,14 +9,14 @@ const PORT = 1972;
 app.use(cors());
 app.use(express.json());
 
-const transporter = nodemailer.createTransporter({
-  host: 'smtp.mailtrap.io',
-  port: 2525,
-  auth: {
-    user: 'your-mailtrap-user',
-    pass: 'your-mailtrap-pass'
-  }
-});
+// const transporter = nodemailer.createTransporter({
+//   host: 'smtp.mailtrap.io',
+//   port: 2525,
+//   auth: {
+//     user: 'your-mailtrap-user',
+//     pass: 'your-mailtrap-pass'
+//   }
+// });
 
 const calculateScore = (metrics) => {
   const weights = {
